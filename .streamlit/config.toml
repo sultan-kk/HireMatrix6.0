@@ -1,0 +1,12 @@
+[theme]
+# Buttons aur sliders ka color
+primaryColor = "#FF4B4B"
+
+# Main page ka background color (White)
+backgroundColor = "#FFFFFF"
+
+# Sidebar ka background color (Dark)
+secondaryBackgroundColor = "#0E1117"
+
+# Text ka color
+textColor = "#262730"
