@@ -291,14 +291,22 @@ def compute_match_scores(jd_text: str, resume_texts: list) -> list:
 # ===========================================================================
 # PHASE 2 — DEEP AI ANALYSIS VIA GROQ (TOP-N CANDIDATES ONLY)
 # ===========================================================================
-def get_groq_api_key():
-    try:
-        if "GROQ_API_KEY" in st.secrets:
-            return st.secrets["GROQ_API_KEY"]
-    except Exception:
-        pass
-    return os.environ.get("GROQ_API_KEY")
+import streamlit as st
 
+# ... baki imports (maslan groq wagerah) ...
+
+st.title("🎯 TalentMatch AI")
+
+# --- YAHAN PAR NAYA CODE AAYEGA ---
+if "GROQ_API_KEY" in st.secrets:
+    groq_api_key = st.secrets["GROQ_API_KEY"]
+else:
+    groq_api_key = st.sidebar.text_input("Groq API Key", type="password")
+
+# --- ISKE BAAD AAPKA BAKI CODE AAYEGA ---
+# maslan, jahan aap Groq client banate hain:
+# if groq_api_key:
+#     client = Groq(api_key=groq_api_key)
 
 @st.cache_resource(show_spinner=False)
 def get_groq_client(api_key: str):
