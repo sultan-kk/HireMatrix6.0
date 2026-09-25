@@ -1,0 +1,19 @@
+streamlit==1.38.0
+pandas==2.2.2
+numpy==1.26.4
+pdfplumber==0.11.4
+python-docx==1.1.2
+
+# Phase 1 — local, zero-cost embedding-based screening
+sentence-transformers==3.0.1
+scikit-learn==1.5.1
+
+# Phase 2 — deep AI analysis for the top-N candidates only.
+# NOTE: the spec's originally requested model, llama3-8b-8192, and its
+# once-recommended replacement, llama-3.1-8b-instant, have both been
+# fully decommissioned by Groq. app.py uses "openai/gpt-oss-120b"
+# instead — see the note at the top of app.py for details.
+groq==0.11.0
+
+# Formatted Excel export (header colors + auto-adjusted column widths)
+xlsxwriter==3.2.0
