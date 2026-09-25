@@ -21,7 +21,7 @@ from groq import Groq
 APP_NAME = "Super TalentMatch AI"
 APP_TAGLINE = "Unified Resume Extraction & Deep LLM Screening"
 # Using a reliable Groq model for structured JSON output
-GROQ_MODEL = "llama3-8b-8192" 
+GROQ_MODEL = "mixtral-8x7b-32768" 
 ACCEPTED_TYPES = ["pdf", "docx"]
 
 # ===========================================================================
