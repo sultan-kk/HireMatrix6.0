@@ -7,3 +7,4 @@ pdfplumber
 pytesseract
 pillow
 python-docx
+reportlab
