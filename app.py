@@ -3,9 +3,10 @@ HireMatrix AI — Universal Enterprise ATS & Resume Screener
 =============================================================================
 Commercial B2B Edition for Recruitment Agencies & Corporate HR Teams.
 Features: 
-- 100% Guaranteed BaseWeb Root White-Box Fix (Universal Descendant Selector)
+- Chronological Ingestion: New entries append to the bottom (last row)
+- Smart Deduplication: Skips existing candidate if Email or Phone matches
+- High-Specificity White-Box Engine for clear visibility in all modes
 - Dynamic Job Position Menu with Full Organization Customization (Add/Delete)
-- Bulk CV Extraction, Groq LLM JD Matching & Formatted Excel Export
 - Permanent Master Admin Profile (Executive Admin) + Auto-Wipe Guest Testers
 """
 
@@ -45,10 +46,14 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ----------------- UNIVERSAL ROOT BASEWEB WHITE-BOX CSS -----------------
+# ----------------- UNIVERSAL WHITE-BOX VISIBILITY CSS -----------------
 UNIVERSAL_WHITE_BOX_CSS = """
 <style>
-/* 1. UNIVERSAL SELECTBOX (ALL DIVS, SPANS & VALUES INSIDE BASEWEB SELECT) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+[data-testid="stSidebar"] { display: none !important; }
+
+/* SELECTBOX */
 div[data-baseweb="select"],
 div[data-baseweb="select"] * {
     background-color: #FFFFFF !important;
@@ -56,22 +61,20 @@ div[data-baseweb="select"] * {
     color: #0F172A !important;
     -webkit-text-fill-color: #0F172A !important;
     font-weight: 700 !important;
-    font-size: 0.96rem !important;
+    font-size: 0.95rem !important;
 }
-
 div[data-baseweb="select"] > div {
     border: 2px solid #0284C7 !important;
     border-radius: 8px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
-
 div[data-baseweb="select"] svg {
     fill: #0284C7 !important;
     color: #0284C7 !important;
     background: transparent !important;
 }
 
-/* 2. UNIVERSAL TEXTAREA (JOB DESCRIPTION BOX) */
+/* TEXTAREA */
 div[data-baseweb="base-input"],
 div[data-baseweb="base-input"] *,
 textarea {
@@ -82,14 +85,13 @@ textarea {
     font-weight: 600 !important;
     font-size: 0.95rem !important;
 }
-
 div[data-baseweb="base-input"] {
     border: 2px solid #0284C7 !important;
     border-radius: 8px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* 3. UNIVERSAL TEXT INPUTS (LOGIN PIN, DEPARTMENT / JOB INPUTS) */
+/* TEXT INPUTS */
 div[data-baseweb="input"],
 div[data-baseweb="input"] *,
 input {
@@ -100,14 +102,13 @@ input {
     font-weight: 700 !important;
     font-size: 0.95rem !important;
 }
-
 div[data-baseweb="input"] {
     border: 2px solid #0284C7 !important;
     border-radius: 8px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* 4. PLACEHOLDERS */
+/* PLACEHOLDERS */
 ::placeholder,
 input::placeholder,
 textarea::placeholder {
@@ -117,7 +118,7 @@ textarea::placeholder {
     font-weight: 500 !important;
 }
 
-/* 5. POPUP DROPDOWN MENU OPTIONS */
+/* POPUP DROPDOWN OPTIONS */
 div[data-baseweb="popover"],
 div[data-baseweb="popover"] *,
 ul[data-baseweb="menu"],
@@ -130,7 +131,6 @@ ul[role="listbox"] * {
     -webkit-text-fill-color: #0F172A !important;
     font-weight: 600 !important;
 }
-
 ul[data-baseweb="menu"] li:hover,
 ul[data-baseweb="menu"] li:hover *,
 ul[role="listbox"] li:hover,
@@ -140,7 +140,7 @@ ul[role="listbox"] li:hover * {
     -webkit-text-fill-color: #0284C7 !important;
 }
 
-/* 6. WIDGET LABELS */
+/* LABELS */
 [data-testid="stWidgetLabel"] p,
 [data-testid="stWidgetLabel"] label,
 [data-testid="stWidgetLabel"] span {
@@ -151,7 +151,7 @@ ul[role="listbox"] li:hover * {
     margin-bottom: 4px !important;
 }
 
-/* 7. FILE UPLOADER */
+/* FILE UPLOADER */
 [data-testid="stFileUploader"] section {
     background-color: #F8FAFC !important;
     border: 2px dashed #0284C7 !important;
@@ -163,7 +163,7 @@ ul[role="listbox"] li:hover * {
     font-weight: 600 !important;
 }
 
-/* 8. TOP NAVBAR & HERO SECTION */
+/* TOP NAVBAR & HERO */
 .top-navbar { 
     background: #0F172A !important; 
     border: 1.5px solid #1E293B !important; 
@@ -198,7 +198,7 @@ ul[role="listbox"] li:hover * {
     padding: 0.6rem 1.2rem !important;
 }
 
-/* 9. LOGIN PROFILE BADGES */
+/* PROFILE CARDS */
 .cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
 .cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
 .cyber-title-pro { color: #0284C7 !important; }
@@ -407,11 +407,12 @@ def delete_custom_job(dept, job_title):
             return False, str(e)
     return False, "Database unavailable."
 
-# ----------------- REPOSITORY & DATABASE -----------------
+# ----------------- REPOSITORY & DATABASE (CHRONOLOGICAL: NEWEST AT THE BOTTOM) -----------------
 def load_database():
     expected_cols = ["Name", "Father Name", "Qualification", "CGPA", "Passing Year", "Institute", "DOB", "Email", "Phone Number", "Experience", "Latest Experience", "Reference"]
     if not supabase: return pd.DataFrame(columns=expected_cols)
     try:
+        # desc=False ensures chronological order: oldest at top, newest at the end/bottom
         res = supabase.table("candidates").select("*").order("id", desc=False).execute()
         if res.data:
             return pd.DataFrame([{
@@ -432,9 +433,40 @@ def load_database():
     return pd.DataFrame(columns=expected_cols)
 
 def save_candidates_to_repository(new_candidates):
-    if not supabase: return
+    if not supabase: return 0, 0
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 1. Deduplication: Fetch existing emails and phones
+    existing_emails = set()
+    existing_phones = set()
+    try:
+        res = supabase.table("candidates").select("email, phone").execute()
+        if res.data:
+            for r in res.data:
+                em = str(r.get("email", "")).strip().lower()
+                ph = re.sub(r"\D", "", str(r.get("phone", "")))
+                if em and em != "not provided": existing_emails.add(em)
+                if ph and len(ph) >= 7: existing_phones.add(ph)
+    except Exception: pass
+
+    inserted_count = 0
+    skipped_count = 0
+
     for c in new_candidates:
+        cand_email = str(c.get("email", "")).strip().lower()
+        cand_phone = re.sub(r"\D", "", str(c.get("phone", "")))
+
+        # Skip if candidate already exists
+        is_dup = False
+        if cand_email and cand_email != "not provided" and cand_email in existing_emails:
+            is_dup = True
+        elif cand_phone and len(cand_phone) >= 7 and cand_phone in existing_phones:
+            is_dup = True
+
+        if is_dup:
+            skipped_count += 1
+            continue
+
         payload = {
             "candidate_name": c.get("name", "Unknown"),
             "father_name": c.get("father_name", "Not Provided"),
@@ -451,8 +483,15 @@ def save_candidates_to_repository(new_candidates):
             "pipeline_status": "Talent Pool",
             "added_at": timestamp
         }
-        try: supabase.table("candidates").insert(payload).execute()
-        except Exception: pass
+        try:
+            supabase.table("candidates").insert(payload).execute()
+            inserted_count += 1
+            if cand_email and cand_email != "not provided": existing_emails.add(cand_email)
+            if cand_phone and len(cand_phone) >= 7: existing_phones.add(cand_phone)
+        except Exception: 
+            pass
+
+    return inserted_count, skipped_count
 
 def clear_candidate_database():
     if supabase:
@@ -703,8 +742,11 @@ with tab1:
                 if txt: extracted.extend(extract_candidates(client, txt, f.name))
             progress.empty()
             if extracted:
-                save_candidates_to_repository(extracted)
-                st.success(f"🎉 Successfully extracted and saved {len(extracted)} candidate(s)!")
+                ins, skp = save_candidates_to_repository(extracted)
+                if skp > 0:
+                    st.success(f"🎉 Saved {ins} new candidate(s)! (Skipped {skp} duplicate profiles)")
+                else:
+                    st.success(f"🎉 Successfully extracted and saved {ins} candidate(s)!")
                 st.rerun()
 
 with tab2:
@@ -786,7 +828,7 @@ with tab2:
 
 with tab3:
     with st.container(border=True):
-        st.markdown("### 🗄️ Master Talent Repository")
+        st.markdown("### 🗄 Master Talent Repository")
         df_live = load_database()
         if not df_live.empty:
             grid_df = df_live.copy()
