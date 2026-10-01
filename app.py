@@ -3,7 +3,8 @@ HireMatrix AI — Universal Enterprise ATS & Resume Screener
 =============================================================================
 Commercial B2B Edition for Recruitment Agencies & Corporate HR Teams.
 Features: 
-- 100% Guaranteed High-Contrast Input Fix (Pure White Box + Pure Black Text)
+- 100% Solid Pure White Boxes for Selectboxes, Dropdowns & Text Inputs
+- High-Contrast Dark Bold Text (#0F172A) for Crystal-Clear Readability
 - Dynamic Job Position Menu with Full Organization Customization (Add/Delete)
 - Bulk CV Extraction, Groq LLM JD Matching & Formatted Excel Export
 - Permanent Master Admin Profile (Executive Admin) + Auto-Wipe Guest Testers
@@ -44,6 +45,172 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+# ----------------- 100% WHITE BOX & HIGH CONTRAST CSS -----------------
+SOLID_WHITE_INPUTS_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+[data-testid="stSidebar"] { display: none !important; }
+
+/* 1. FORCE EVERY SELECTBOX CONTAINER & INNER ELEMENT TO SOLID PURE WHITE */
+.stSelectbox,
+[data-testid="stSelectbox"],
+[data-testid="stSelectbox"] > div,
+[data-testid="stSelectbox"] div[data-baseweb="select"],
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+div[data-baseweb="select"],
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] div[role="combobox"] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    border: 2px solid #0284C7 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 2. FORCE TEXT INSIDE SELECTBOX TO BOLD DARK NAVY */
+div[data-baseweb="select"] *,
+[data-testid="stSelectbox"] *,
+[data-testid="stSelectbox"] span,
+[data-testid="stSelectbox"] div {
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+}
+
+/* SELECTBOX DROPDOWN CARET ICON */
+div[data-baseweb="select"] svg {
+    fill: #0284C7 !important;
+    color: #0284C7 !important;
+}
+
+/* 3. FORCE ALL TEXT INPUTS TO SOLID WHITE */
+.stTextInput,
+[data-testid="stTextInput"],
+[data-testid="stTextInput"] > div,
+[data-testid="stTextInput"] div[data-baseweb="input"],
+[data-testid="stTextInput"] div[data-baseweb="input"] > div,
+div[data-baseweb="input"],
+div[data-baseweb="input"] input {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    border: 2px solid #0284C7 !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+}
+
+/* 4. FORCE TEXTAREA TO SOLID WHITE */
+.stTextArea,
+[data-testid="stTextArea"],
+[data-testid="stTextArea"] > div,
+[data-testid="stTextArea"] div[data-baseweb="base-input"],
+div[data-baseweb="base-input"],
+div[data-baseweb="base-input"] textarea {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    border: 2px solid #0284C7 !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+}
+
+/* 5. PLACEHOLDER TEXT VISIBILITY */
+::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: #64748B !important;
+    -webkit-text-fill-color: #64748B !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+
+/* 6. DROPDOWN POPUP MENU OPTIONS */
+ul[data-baseweb="menu"],
+ul[data-baseweb="menu"] li,
+div[data-baseweb="popover"],
+div[data-baseweb="popover"] * {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 600 !important;
+}
+ul[data-baseweb="menu"] li:hover {
+    background-color: #E0F2FE !important;
+    color: #0284C7 !important;
+    -webkit-text-fill-color: #0284C7 !important;
+}
+
+/* 7. LABELS & WIDGET HEADINGS */
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] span {
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 0.98rem !important;
+    margin-bottom: 4px !important;
+}
+
+/* 8. TOP NAVBAR & HERO CARD */
+.top-navbar { 
+    background: #0F172A !important; 
+    border: 1.5px solid #1E293B !important; 
+    border-bottom: 3px solid #06B6D4 !important; 
+    border-radius: 16px !important; 
+    padding: 1.1rem 2rem !important; 
+    margin-bottom: 1.5rem !important; 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+}
+.top-navbar h2 { color: #FFFFFF !important; margin: 0 !important; }
+.top-navbar p { color: #94A3B8 !important; margin: 4px 0 0 0 !important; }
+
+.corp-hero { 
+    background: #0F172A !important; 
+    border: 1.5px solid #1E293B !important; 
+    border-left: 6px solid #06B6D4 !important; 
+    border-radius: 16px !important; 
+    padding: 1.8rem 2.2rem !important; 
+    margin-bottom: 1.8rem !important; 
+}
+.corp-hero h1 { color: #FFFFFF !important; font-size: 1.9rem !important; font-weight: 800 !important; margin: 0 0 8px 0 !important; }
+.corp-hero p { color: #CBD5E1 !important; font-size: 0.95rem !important; margin: 0 !important; }
+
+.stButton > button { 
+    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; 
+    color: #FFFFFF !important; 
+    border: 1px solid #38BDF8 !important; 
+    border-radius: 12px !important; 
+    font-weight: 700 !important; 
+    padding: 0.6rem 1.2rem !important;
+}
+
+/* 9. LOGIN PROFILE BADGES */
+.cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
+.cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
+.cyber-title-pro { color: #0284C7 !important; }
+.cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(2, 132, 199, 0.1) !important; border: 1.5px solid #0284C7 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #0284C7 !important; }
+
+.arl-clickable-badge { text-decoration: none !important; color: inherit !important; display: block !important; cursor: pointer !important; }
+.cyber-badge-card { background: #0F172A !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; transition: all 0.25s ease-in-out !important; }
+.cyber-badge-card:hover { border-color: #06B6D4 !important; transform: translateY(-3px); }
+.cyber-top-bar { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
+.cyber-access-id { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #94A3B8; }
+.cyber-status-dot { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #38BDF8; font-weight: 700; }
+.cyber-avatar-ring { width: 54px; height: 54px; border-radius: 50%; background: #1E293B; border: 2px solid #06B6D4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.cyber-name-title { margin: 0; font-size: 1.35rem; font-weight: 800; color: #FFFFFF !important; }
+.cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #38BDF8; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
+</style>
+"""
+st.markdown(SOLID_WHITE_INPUTS_CSS, unsafe_allow_html=True)
 
 if "profile" in st.query_params:
     selected_prof = st.query_params["profile"]
@@ -323,132 +490,6 @@ def generate_excel(df: pd.DataFrame, sheet_name="Data") -> bytes:
         export_df.to_excel(writer, index=False, sheet_name=sheet_name)
     buffer.seek(0)
     return buffer.getvalue()
-
-# ----------------- ABSOLUTE TEXT VISIBILITY OVERRIDE CSS -----------------
-BULLETPROOF_CSS = """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
-html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
-[data-testid="stSidebar"] { display: none !important; }
-
-/* 1. FORCE SELECTBOX, TEXTINPUT, AND TEXTAREA TO SOLID WHITE BACKGROUND */
-[data-testid="stSelectbox"] div[data-baseweb="select"],
-[data-testid="stSelectbox"] div[data-baseweb="select"] *,
-[data-testid="stTextInput"] div[data-baseweb="input"],
-[data-testid="stTextInput"] div[data-baseweb="input"] *,
-[data-testid="stTextArea"] div[data-baseweb="base-input"],
-[data-testid="stTextArea"] textarea {
-    background-color: #FFFFFF !important;
-    background: #FFFFFF !important;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    font-weight: 700 !important;
-}
-
-/* 2. CRISP BORDER FOR ALL INPUT BOXES */
-[data-testid="stSelectbox"] div[data-baseweb="select"] > div,
-[data-testid="stTextInput"] div[data-baseweb="input"],
-[data-testid="stTextArea"] div[data-baseweb="base-input"] {
-    border: 2px solid #0284C7 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.06) !important;
-}
-
-/* 3. DROPDOWN ARROW COLOR */
-[data-testid="stSelectbox"] svg {
-    fill: #0284C7 !important;
-    color: #0284C7 !important;
-}
-
-/* 4. PLACEHOLDERS */
-textarea::placeholder,
-input::placeholder,
-[data-testid="stTextArea"] textarea::placeholder,
-[data-testid="stTextInput"] input::placeholder {
-    color: #475569 !important;
-    -webkit-text-fill-color: #475569 !important;
-    font-weight: 500 !important;
-    opacity: 1 !important;
-}
-
-/* 5. DROPDOWN MENU OPTIONS WHEN CLICKED */
-ul[data-baseweb="menu"],
-ul[data-baseweb="menu"] *,
-div[data-baseweb="popover"],
-div[data-baseweb="popover"] * {
-    background-color: #FFFFFF !important;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-}
-ul[data-baseweb="menu"] li:hover {
-    background-color: #E0F2FE !important;
-    color: #0284C7 !important;
-    -webkit-text-fill-color: #0284C7 !important;
-}
-
-/* 6. LABELS */
-[data-testid="stWidgetLabel"] p,
-[data-testid="stWidgetLabel"] label,
-[data-testid="stWidgetLabel"] span {
-    color: #0F172A !important;
-    -webkit-text-fill-color: #0F172A !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-}
-
-/* 7. TOP NAVBAR & HEADER */
-.top-navbar { 
-    background: #0F172A !important; 
-    border: 1.5px solid #1E293B !important; 
-    border-bottom: 3px solid #06B6D4 !important; 
-    border-radius: 16px !important; 
-    padding: 1.1rem 2rem !important; 
-    margin-bottom: 1.5rem !important; 
-    display: flex !important; 
-    justify-content: space-between !important; 
-    align-items: center !important; 
-}
-.top-navbar h2 { color: #FFFFFF !important; margin: 0 !important; }
-.top-navbar p { color: #94A3B8 !important; margin: 4px 0 0 0 !important; }
-
-.corp-hero { 
-    background: #0F172A !important; 
-    border: 1.5px solid #1E293B !important; 
-    border-left: 6px solid #06B6D4 !important; 
-    border-radius: 16px !important; 
-    padding: 1.8rem 2.2rem !important; 
-    margin-bottom: 1.8rem !important; 
-}
-.corp-hero h1 { color: #FFFFFF !important; font-size: 1.9rem !important; font-weight: 800 !important; margin: 0 0 8px 0 !important; }
-.corp-hero p { color: #CBD5E1 !important; font-size: 0.95rem !important; margin: 0 !important; }
-
-.stButton > button { 
-    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; 
-    color: #FFFFFF !important; 
-    border: 1px solid #38BDF8 !important; 
-    border-radius: 12px !important; 
-    font-weight: 700 !important; 
-    padding: 0.6rem 1.2rem !important;
-}
-
-/* 8. PROFILE BADGES */
-.cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
-.cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
-.cyber-title-pro { color: #0284C7 !important; }
-.cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(2, 132, 199, 0.1) !important; border: 1.5px solid #0284C7 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #0284C7 !important; }
-
-.arl-clickable-badge { text-decoration: none !important; color: inherit !important; display: block !important; cursor: pointer !important; }
-.cyber-badge-card { background: #0F172A !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; transition: all 0.25s ease-in-out !important; }
-.cyber-badge-card:hover { border-color: #06B6D4 !important; transform: translateY(-3px); }
-.cyber-top-bar { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
-.cyber-access-id { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #94A3B8; }
-.cyber-status-dot { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #38BDF8; font-weight: 700; }
-.cyber-avatar-ring { width: 54px; height: 54px; border-radius: 50%; background: #1E293B; border: 2px solid #06B6D4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-.cyber-name-title { margin: 0; font-size: 1.35rem; font-weight: 800; color: #FFFFFF !important; }
-.cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #38BDF8; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
-</style>
-"""
-st.markdown(BULLETPROOF_CSS, unsafe_allow_html=True)
 
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "hr_name" not in st.session_state: st.session_state.hr_name = ""
