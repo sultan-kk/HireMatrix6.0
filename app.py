@@ -2,11 +2,7 @@
 HireMatrix AI — Universal Enterprise ATS & Resume Screener
 =============================================================================
 Commercial B2B Edition for Recruitment Agencies & Corporate HR Teams.
-Features: 
-- Permanent Master Admin Profile (Executive Admin)
-- 1-Click Guest Testing Profiles (Name + PIN only, No OTP)
-- Auto-Wipe Guest Profiles & Test Data on Logout / Lock Portal
-- Bulk CV Extraction, Groq LLM JD Matching & Formatted Excel Export
+High-Contrast UI & Fixed Text Visibility in Both Light/Dark Modes.
 """
 
 import io
@@ -153,7 +149,6 @@ def create_guest_tester_profile(name, pin):
         return False, f"Error: {e}", None
 
 def wipe_guest_session_data(guest_email):
-    """Guest tester ke logout hone par uski profile aur test data delete karta hai"""
     if not supabase or not guest_email or guest_email == PERMANENT_ADMIN_EMAIL:
         return
     try:
@@ -251,38 +246,110 @@ def generate_excel(df: pd.DataFrame, sheet_name="Data") -> bytes:
     buffer.seek(0)
     return buffer.getvalue()
 
-# ----------------- MODERN B2B SAAS CSS -----------------
-MODERN_SAAS_CSS = """
+# ----------------- HIGH-CONTRAST CSS (FIXED FOR ALL MODES) -----------------
+HIGH_CONTRAST_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 [data-testid="stSidebar"] { display: none !important; }
 
+/* TOP NAVBAR */
+.top-navbar { 
+    background: #0F172A !important; 
+    border: 1.5px solid #1E293B !important; 
+    border-bottom: 3px solid #06B6D4 !important; 
+    border-radius: 16px !important; 
+    padding: 1.1rem 2rem !important; 
+    margin-bottom: 1.5rem !important; 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+}
+.top-navbar h2 { color: #FFFFFF !important; }
+.top-navbar p { color: #94A3B8 !important; }
+
+/* HERO SECTION (DARK SOLID BACKGROUND WITH CRISP WHITE & CYAN TEXT) */
+.corp-hero { 
+    background: #0F172A !important; 
+    border: 1.5px solid #1E293B !important; 
+    border-left: 6px solid #06B6D4 !important; 
+    border-radius: 16px !important; 
+    padding: 1.8rem 2.2rem !important; 
+    margin-bottom: 1.8rem !important; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+.corp-hero h1 { 
+    color: #FFFFFF !important; 
+    font-size: 1.9rem !important; 
+    font-weight: 800 !important; 
+    margin: 0 0 8px 0 !important; 
+}
+.corp-hero p { 
+    color: #E2E8F0 !important; 
+    font-size: 1rem !important; 
+    margin: 0 !important; 
+}
+
+/* SECTION CARDS */
+.corp-card { 
+    background: #FFFFFF !important; 
+    border: 1.5px solid #E2E8F0 !important; 
+    border-radius: 16px !important; 
+    padding: 1.8rem !important; 
+    margin-bottom: 1.5rem !important; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+.corp-card h4 { 
+    color: #0F172A !important; 
+    font-size: 1.3rem !important; 
+    font-weight: 800 !important; 
+    margin-top: 0 !important;
+    margin-bottom: 0.8rem !important;
+}
+
+/* FILE UPLOADER HIGH-CONTRAST FIX */
+[data-testid="stFileUploader"] section { 
+    background: #F8FAFC !important; 
+    border: 2px dashed #0284C7 !important; 
+    border-radius: 14px !important; 
+}
+[data-testid="stFileUploader"] section * { 
+    color: #0F172A !important; 
+    font-weight: 600 !important; 
+}
+
+/* BUTTONS */
+.stButton > button { 
+    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; 
+    color: #FFFFFF !important; 
+    border: 1px solid #38BDF8 !important; 
+    border-radius: 12px !important; 
+    font-weight: 700 !important; 
+    padding: 0.6rem 1.2rem !important;
+}
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important; 
+    color: #FFFFFF !important;
+}
+
+/* PROFILE CARDS */
 .cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
-.cyber-title { font-size: 3.2rem !important; font-weight: 800 !important; color: #FFFFFF !important; margin: 0 0 8px 0 !important; }
-.cyber-title-pro { color: #06B6D4 !important; background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(6, 182, 212, 0.12) !important; border: 1.5px solid #06B6D4 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #06B6D4 !important; }
+.cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
+.cyber-title-pro { color: #0284C7 !important; }
+.cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(2, 132, 199, 0.1) !important; border: 1.5px solid #0284C7 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #0284C7 !important; }
 
 .arl-clickable-badge { text-decoration: none !important; color: inherit !important; display: block !important; cursor: pointer !important; }
-.cyber-badge-card { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important; transition: all 0.25s ease-in-out !important; }
-.arl-clickable-badge:hover .cyber-badge-card { border-color: #06B6D4 !important; transform: translateY(-3px) scale(1.01); }
-
-.cyber-top-bar { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
+.cyber-badge-card { background: #0F172A !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important; transition: all 0.25s ease-in-out !important; }
+.cyber-badge-card:hover { border-color: #06B6D4 !important; transform: translateY(-3px); }
+.cyber-top-bar { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
 .cyber-access-id { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #94A3B8; }
-.cyber-status-dot { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #06B6D4; font-weight: 700; }
-.cyber-avatar-ring { width: 54px; height: 54px; border-radius: 50%; background: #0F172A; border: 2px solid #06B6D4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-.cyber-name-title { margin: 0; font-size: 1.35rem; font-weight: 800; color: #F8FAFC !important; }
-.cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #06B6D4; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
-
-.stButton > button { background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; color: #FFFFFF !important; border: 1.5px solid #38BDF8 !important; border-radius: 12px !important; font-weight: 700 !important; }
-.top-navbar { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 1.5px solid #334155; border-bottom: 2px solid #06B6D4; border-radius: 16px; padding: 1.1rem 2rem; margin-bottom: 1.8rem; display: flex; justify-content: space-between; align-items: center; }
-.corp-hero { background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1.5px solid #334155; border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 2rem; border-left: 6px solid #06B6D4; }
-.corp-card { background: var(--background-color); border: 1.5px solid rgba(6, 182, 212, 0.25); border-radius: 16px; padding: 1.8rem; margin-bottom: 1.5rem; }
-.metric-box .val { font-size: 1.8rem; font-weight: 800; color: #06B6D4; }
-[data-testid="stVerticalBlock"] > [data-testid="stVerticalBlockBorderWrapper"]:first-child { border: 1.5px solid rgba(6, 182, 212, 0.35) !important; border-radius: 24px !important; padding: 2.2rem !important; background: rgba(15, 23, 42, 0.7) !important; }
+.cyber-status-dot { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #38BDF8; font-weight: 700; }
+.cyber-avatar-ring { width: 54px; height: 54px; border-radius: 50%; background: #1E293B; border: 2px solid #06B6D4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.cyber-name-title { margin: 0; font-size: 1.35rem; font-weight: 800; color: #FFFFFF !important; }
+.cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #38BDF8; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
 </style>
 """
-st.markdown(MODERN_SAAS_CSS, unsafe_allow_html=True)
+st.markdown(HIGH_CONTRAST_CSS, unsafe_allow_html=True)
 
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "hr_name" not in st.session_state: st.session_state.hr_name = ""
@@ -406,8 +473,8 @@ with col_n1:
     st.markdown(f"""
         <div class="top-navbar">
             <div>
-                <h2 style="margin: 0; color: #FFFFFF; font-size: 1.55rem;">HireMatrix <span style="color: #06B6D4;">AI</span></h2>
-                <p style="margin: 4px 0 0 0; color: #94A3B8; font-size: 0.8rem;">Active: <b>{st.session_state.hr_name}</b> ({st.session_state.hr_email}) &bull; Status: <span style="color: #06B6D4;"><b>{user_badge}</b></span></p>
+                <h2 style="margin: 0; font-size: 1.55rem;">HireMatrix <span style="color: #38BDF8;">AI</span></h2>
+                <p style="margin: 4px 0 0 0; font-size: 0.82rem;">Active: <b>{st.session_state.hr_name}</b> ({st.session_state.hr_email}) &bull; Status: <span style="color: #38BDF8;"><b>{user_badge}</b></span></p>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -426,8 +493,8 @@ with col_n2:
 
 st.markdown(f"""
     <div class="corp-hero">
-        <h1 style="color: #FFFFFF; margin: 0 0 8px 0;">Automated AI Recruitment Pipeline</h1>
-        <p style="color: #CBD5E1; margin: 0;">Welcome, <b>{st.session_state.hr_name}</b> &mdash; Ingest bulk CVs, match against any Job Description, and view instant candidate gap analysis.</p>
+        <h1>Automated AI Recruitment Pipeline</h1>
+        <p>Welcome, <b>{st.session_state.hr_name}</b> &mdash; Ingest bulk CVs, match against any Job Description, and view instant candidate gap analysis.</p>
     </div>
 """, unsafe_allow_html=True)
 
