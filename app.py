@@ -2,7 +2,11 @@
 HireMatrix AI — Universal Enterprise ATS & Resume Screener
 =============================================================================
 Commercial B2B Edition for Recruitment Agencies & Corporate HR Teams.
-High-Contrast UI & Fixed Text Visibility in Both Light/Dark Modes.
+Features: 
+- Dynamic Job Position Menu with Full Organization Customization (Add/Delete)
+- High-Contrast White-Box Input Theme (Guaranteed 100% Visibility)
+- Bulk CV Extraction, Groq LLM JD Matching & Formatted Excel Export
+- Permanent Master Admin Profile (Executive Admin) + Auto-Wipe Guest Testers
 """
 
 import io
@@ -157,6 +161,80 @@ def wipe_guest_session_data(guest_email):
     except Exception:
         pass
 
+# ----------------- DYNAMIC JOB CATALOG & ORGANIZATION CUSTOMIZATION -----------------
+DEFAULT_CATALOG = {
+    "Software & Technology": [
+        "Senior Software Engineer",
+        "Full Stack Web Developer",
+        "AI / Machine Learning Engineer",
+        "DevOps & Cloud Engineer",
+        "UI/UX Product Designer",
+        "Technical Product Manager"
+    ],
+    "Sales & Marketing": [
+        "Head of Growth Marketing",
+        "Enterprise Account Executive",
+        "Digital Marketing Strategist",
+        "Business Development Manager"
+    ],
+    "Human Resources & Admin": [
+        "Talent Acquisition Lead",
+        "HR Operations Specialist",
+        "People & Culture Partner",
+        "Executive Administrative Officer"
+    ],
+    "Finance & Accounts": [
+        "Chief Financial Controller",
+        "Senior Corporate Accountant",
+        "Financial Analyst & Planner"
+    ]
+}
+
+def load_job_catalog():
+    catalog = {}
+    if supabase:
+        try:
+            res = supabase.table("job_hierarchy").select("*").order("id", desc=False).execute()
+            if res.data and len(res.data) > 0:
+                for row in res.data:
+                    dept = row.get("department", "General")
+                    job = row.get("job_title", "")
+                    if job:
+                        catalog.setdefault(dept, []).append(job)
+                return catalog
+            else:
+                seed = [{"department": d, "job_title": j} for d, jobs in DEFAULT_CATALOG.items() for j in jobs]
+                supabase.table("job_hierarchy").insert(seed).execute()
+                return DEFAULT_CATALOG
+        except Exception:
+            pass
+    return DEFAULT_CATALOG
+
+def add_custom_job(dept, job_title):
+    clean_d = dept.strip()
+    clean_j = job_title.strip()
+    if not clean_d or not clean_j:
+        return False, "Department and Job Title cannot be empty."
+    if supabase:
+        try:
+            chk = supabase.table("job_hierarchy").select("id").eq("department", clean_d).eq("job_title", clean_j).execute()
+            if chk.data and len(chk.data) > 0:
+                return False, f"'{clean_j}' already exists in {clean_d}."
+            supabase.table("job_hierarchy").insert({"department": clean_d, "job_title": clean_j}).execute()
+            return True, f"✅ Successfully added '{clean_j}' to {clean_d}!"
+        except Exception as e:
+            return False, str(e)
+    return False, "Database unavailable."
+
+def delete_custom_job(dept, job_title):
+    if supabase:
+        try:
+            supabase.table("job_hierarchy").delete().eq("department", dept).eq("job_title", job_title).execute()
+            return True, f"🗑️ Deleted '{job_title}' successfully!"
+        except Exception as e:
+            return False, str(e)
+    return False, "Database unavailable."
+
 # ----------------- REPOSITORY & DATABASE -----------------
 def load_database():
     expected_cols = ["Name", "Father Name", "Qualification", "CGPA", "Passing Year", "Institute", "DOB", "Email", "Phone Number", "Experience", "Latest Experience", "Reference"]
@@ -246,14 +324,70 @@ def generate_excel(df: pd.DataFrame, sheet_name="Data") -> bytes:
     buffer.seek(0)
     return buffer.getvalue()
 
-# ----------------- HIGH-CONTRAST CSS (FIXED FOR ALL MODES) -----------------
-HIGH_CONTRAST_CSS = """
+# ----------------- 100% VISIBILITY CSS & STYLING -----------------
+BULLETPROOF_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 [data-testid="stSidebar"] { display: none !important; }
 
-/* TOP NAVBAR */
+/* 1. FORCE ALL INPUT BOXES, SELECTBOXES & TEXTAREAS TO PURE WHITE WITH CRISP BLUE BORDER */
+.stTextInput div[data-baseweb="input"],
+.stTextArea div[data-baseweb="base-input"],
+div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    border: 2px solid #0284C7 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 2. FORCE TEXT TO DARK NAVY WITH MAX CONTRAST */
+.stTextInput input,
+.stTextArea textarea,
+div[data-baseweb="select"] div {
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    background-color: transparent !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+}
+
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: #64748B !important;
+    -webkit-text-fill-color: #64748B !important;
+}
+
+/* 3. DROPDOWN MENU POPOVER OPTIONS */
+div[data-baseweb="popover"],
+ul[role="listbox"] {
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-radius: 10px !important;
+}
+
+ul[role="listbox"] li {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 600 !important;
+}
+
+ul[role="listbox"] li:hover {
+    background-color: #E0F2FE !important;
+    color: #0284C7 !important;
+    -webkit-text-fill-color: #0284C7 !important;
+}
+
+/* 4. LABELS */
+label, [data-testid="stWidgetLabel"] p {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 4px !important;
+}
+
+/* 5. TOP NAVBAR */
 .top-navbar { 
     background: #0F172A !important; 
     border: 1.5px solid #1E293B !important; 
@@ -265,10 +399,10 @@ html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !impor
     justify-content: space-between !important; 
     align-items: center !important; 
 }
-.top-navbar h2 { color: #FFFFFF !important; }
-.top-navbar p { color: #94A3B8 !important; }
+.top-navbar h2 { color: #FFFFFF !important; margin: 0 !important; }
+.top-navbar p { color: #94A3B8 !important; margin: 4px 0 0 0 !important; }
 
-/* HERO SECTION (DARK SOLID BACKGROUND WITH CRISP WHITE & CYAN TEXT) */
+/* 6. HERO BOX */
 .corp-hero { 
     background: #0F172A !important; 
     border: 1.5px solid #1E293B !important; 
@@ -276,49 +410,11 @@ html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !impor
     border-radius: 16px !important; 
     padding: 1.8rem 2.2rem !important; 
     margin-bottom: 1.8rem !important; 
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
 }
-.corp-hero h1 { 
-    color: #FFFFFF !important; 
-    font-size: 1.9rem !important; 
-    font-weight: 800 !important; 
-    margin: 0 0 8px 0 !important; 
-}
-.corp-hero p { 
-    color: #E2E8F0 !important; 
-    font-size: 1rem !important; 
-    margin: 0 !important; 
-}
+.corp-hero h1 { color: #FFFFFF !important; font-size: 1.9rem !important; font-weight: 800 !important; margin: 0 0 8px 0 !important; }
+.corp-hero p { color: #CBD5E1 !important; font-size: 0.95rem !important; margin: 0 !important; }
 
-/* SECTION CARDS */
-.corp-card { 
-    background: #FFFFFF !important; 
-    border: 1.5px solid #E2E8F0 !important; 
-    border-radius: 16px !important; 
-    padding: 1.8rem !important; 
-    margin-bottom: 1.5rem !important; 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-}
-.corp-card h4 { 
-    color: #0F172A !important; 
-    font-size: 1.3rem !important; 
-    font-weight: 800 !important; 
-    margin-top: 0 !important;
-    margin-bottom: 0.8rem !important;
-}
-
-/* FILE UPLOADER HIGH-CONTRAST FIX */
-[data-testid="stFileUploader"] section { 
-    background: #F8FAFC !important; 
-    border: 2px dashed #0284C7 !important; 
-    border-radius: 14px !important; 
-}
-[data-testid="stFileUploader"] section * { 
-    color: #0F172A !important; 
-    font-weight: 600 !important; 
-}
-
-/* BUTTONS */
+/* 7. BUTTONS */
 .stButton > button { 
     background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; 
     color: #FFFFFF !important; 
@@ -327,19 +423,15 @@ html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !impor
     font-weight: 700 !important; 
     padding: 0.6rem 1.2rem !important;
 }
-.stButton > button:hover {
-    background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important; 
-    color: #FFFFFF !important;
-}
 
-/* PROFILE CARDS */
+/* 8. PROFILE BADGES */
 .cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
 .cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
 .cyber-title-pro { color: #0284C7 !important; }
 .cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(2, 132, 199, 0.1) !important; border: 1.5px solid #0284C7 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #0284C7 !important; }
 
 .arl-clickable-badge { text-decoration: none !important; color: inherit !important; display: block !important; cursor: pointer !important; }
-.cyber-badge-card { background: #0F172A !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important; transition: all 0.25s ease-in-out !important; }
+.cyber-badge-card { background: #0F172A !important; border: 1.5px solid #334155 !important; border-left: 5px solid #06B6D4 !important; border-radius: 16px !important; padding: 1.4rem 1.6rem !important; transition: all 0.25s ease-in-out !important; }
 .cyber-badge-card:hover { border-color: #06B6D4 !important; transform: translateY(-3px); }
 .cyber-top-bar { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.15); padding-bottom: 0.5rem; margin-bottom: 0.8rem; }
 .cyber-access-id { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #94A3B8; }
@@ -349,7 +441,7 @@ html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !impor
 .cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #38BDF8; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
 </style>
 """
-st.markdown(HIGH_CONTRAST_CSS, unsafe_allow_html=True)
+st.markdown(BULLETPROOF_CSS, unsafe_allow_html=True)
 
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "hr_name" not in st.session_state: st.session_state.hr_name = ""
@@ -466,6 +558,7 @@ if not st.session_state.logged_in:
 # MAIN RECRUITER PORTAL
 # ===========================================================================
 df_all = load_database()
+catalog = load_job_catalog()
 
 col_n1, col_n2 = st.columns([8.2, 1.8], vertical_alignment="center")
 with col_n1:
@@ -473,8 +566,8 @@ with col_n1:
     st.markdown(f"""
         <div class="top-navbar">
             <div>
-                <h2 style="margin: 0; font-size: 1.55rem;">HireMatrix <span style="color: #38BDF8;">AI</span></h2>
-                <p style="margin: 4px 0 0 0; font-size: 0.82rem;">Active: <b>{st.session_state.hr_name}</b> ({st.session_state.hr_email}) &bull; Status: <span style="color: #38BDF8;"><b>{user_badge}</b></span></p>
+                <h2>HireMatrix <span style="color: #38BDF8;">AI</span></h2>
+                <p>Active: <b>{st.session_state.hr_name}</b> ({st.session_state.hr_email}) &bull; Status: <span style="color: #38BDF8;"><b>{user_badge}</b></span></p>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -541,77 +634,114 @@ Return ONLY JSON: {{"match_score": 0-100, "is_relevant": true/false, "missing_sk
 tab1, tab2, tab3 = st.tabs(["📥 1. Ingest Resumes", "🎯 2. Screen & Match", "🗄️ 3. Master Talent Grid"])
 
 with tab1:
-    st.markdown('<div class="corp-card"><h4>📥 Bulk Ingestion (PDF / DOCX)</h4>', unsafe_allow_html=True)
-    files = st.file_uploader("Upload resumes", type=ACCEPTED_TYPES, accept_multiple_files=True)
-    g_key = st.secrets.get("GROQ_API_KEY", os.environ.get("GROQ_API_KEY", ""))
-    
-    if st.button("⚡ Process & Extract Resumes", type="primary", use_container_width=True, disabled=not (files and g_key)):
-        client = Groq(api_key=g_key)
-        extracted = []
-        progress = st.progress(0.0, text="Extracting candidate profiles via Groq...")
-        for i, f in enumerate(files):
-            progress.progress((i + 1) / (len(files) + 1), text=f"Processing {f.name}...")
-            txt = extract_text_from_pdf(f.read()) if f.name.endswith(".pdf") else ""
-            if txt: extracted.extend(extract_candidates(client, txt, f.name))
-        progress.empty()
-        if extracted:
-            save_candidates_to_repository(extracted)
-            st.success(f"🎉 Successfully extracted and saved {len(extracted)} candidate(s)!")
-            st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("### 📥 Bulk Ingestion (PDF / DOCX)")
+        st.caption("Upload multiple single resumes or one bulk merged PDF containing multiple candidate CVs.")
+        files = st.file_uploader("Upload resumes", type=ACCEPTED_TYPES, accept_multiple_files=True)
+        g_key = st.secrets.get("GROQ_API_KEY", os.environ.get("GROQ_API_KEY", ""))
+        
+        if st.button("⚡ Process & Extract Resumes", type="primary", use_container_width=True, disabled=not (files and g_key)):
+            client = Groq(api_key=g_key)
+            extracted = []
+            progress = st.progress(0.0, text="Extracting candidate profiles via Groq...")
+            for i, f in enumerate(files):
+                progress.progress((i + 1) / (len(files) + 1), text=f"Processing {f.name}...")
+                txt = extract_text_from_pdf(f.read()) if f.name.endswith(".pdf") else ""
+                if txt: extracted.extend(extract_candidates(client, txt, f.name))
+            progress.empty()
+            if extracted:
+                save_candidates_to_repository(extracted)
+                st.success(f"🎉 Successfully extracted and saved {len(extracted)} candidate(s)!")
+                st.rerun()
 
 with tab2:
-    st.markdown('<div class="corp-card"><h4>🎯 AI Screening against Job Description</h4>', unsafe_allow_html=True)
-    col_j1, col_j2 = st.columns(2)
-    with col_j1:
-        target_role = st.text_input("Target Position Title", value="Senior Software Engineer")
-    with col_j2:
-        thresh = st.slider("Minimum Match Score Highlight (%)", 0, 100, 50)
-    
-    jd = st.text_area("Paste Full Job Description Requirements", height=120, placeholder="Requirements, skills, experience...")
-    
-    if st.button("⚡ Run Deep AI Screening", type="primary", use_container_width=True, disabled=not (jd and not df_all.empty and g_key)):
-        client = Groq(api_key=g_key)
-        screened = []
-        progress = st.progress(0.0, text="Evaluating candidates...")
-        for idx, (_, row) in enumerate(df_all.iterrows()):
-            progress.progress((idx + 1) / (len(df_all) + 1))
-            sc, rel, miss = evaluate_jd(client, row, jd)
-            if rel:
-                screened.append({
-                    **row.to_dict(),
-                    "job_title": target_role,
-                    "match_score": sc,
-                    "missing_skills": miss,
-                    "pipeline_status": "Shortlisted" if sc >= thresh else "Talent Pool"
-                })
-        progress.empty()
-        screened.sort(key=lambda x: x["match_score"], reverse=True)
-        st.session_state.screening_results = screened
-        save_screened_to_supabase(screened)
-        st.success(f"Screening complete! {len(screened)} candidate(s) evaluated.")
-        st.rerun()
+    with st.container(border=True):
+        st.markdown("### 🎯 AI Screening against Job Description")
+        
+        # --- DYNAMIC DROPDOWN MENU FOR POSITION TITLE ---
+        dept_options = list(catalog.keys())
+        c_m1, c_m2, c_m3 = st.columns([1.5, 2, 1.2])
+        with c_m1:
+            selected_dept = st.selectbox("1. Select Department", dept_options, index=0)
+        with c_m2:
+            position_options = catalog.get(selected_dept, [])
+            target_role = st.selectbox("2. Target Position Title (Menu)", position_options if position_options else ["General Position"])
+        with c_m3:
+            thresh = st.slider("Match Threshold (%)", 0, 100, 50)
+        
+        # --- ORGANIZATION EDIT / CUSTOMIZE PANEL ---
+        with st.expander("⚙️ Customize Job Positions (Add / Delete for your Organization)"):
+            st.caption("Add or remove positions specific to your company, industry, or client needs. Saved automatically.")
+            e_col1, e_col2 = st.columns(2)
+            with e_col1:
+                st.markdown("##### ➕ Add Position")
+                new_d = st.text_input("Department Name", placeholder="e.g. Healthcare / Retail / Banking", key="add_dept_in")
+                new_j = st.text_input("New Job Title", placeholder="e.g. Chief Medical Officer", key="add_job_in")
+                if st.button("Add to Organization Menu", use_container_width=True):
+                    ok, msg = add_custom_job(new_d, new_j)
+                    if ok:
+                        st.success(msg)
+                        st.rerun()
+                    else:
+                        st.warning(msg)
+            with e_col2:
+                st.markdown("##### 🗑️ Remove Position")
+                del_d = st.selectbox("Select Department to Delete From", dept_options, key="del_d_sel")
+                del_j_options = catalog.get(del_d, [])
+                del_j = st.selectbox("Select Job Title to Delete", del_j_options if del_j_options else ["None"], key="del_j_sel")
+                if st.button("Delete Selected Job", use_container_width=True, disabled=not del_j_options):
+                    ok, msg = delete_custom_job(del_d, del_j)
+                    if ok:
+                        st.success(msg)
+                        st.rerun()
+                    else:
+                        st.error(msg)
+        
+        jd = st.text_area("Paste Full Job Description Requirements", height=140, placeholder="Enter required experience, tech stack, responsibilities...")
+        
+        if st.button("⚡ Run Deep AI Screening", type="primary", use_container_width=True, disabled=not (jd and not df_all.empty and g_key)):
+            client = Groq(api_key=g_key)
+            screened = []
+            progress = st.progress(0.0, text="Evaluating candidates against Job Description...")
+            for idx, (_, row) in enumerate(df_all.iterrows()):
+                progress.progress((idx + 1) / (len(df_all) + 1))
+                sc, rel, miss = evaluate_jd(client, row, jd)
+                if rel:
+                    screened.append({
+                        **row.to_dict(),
+                        "job_title": target_role,
+                        "match_score": sc,
+                        "missing_skills": miss,
+                        "pipeline_status": "Shortlisted" if sc >= thresh else "Talent Pool"
+                    })
+            progress.empty()
+            screened.sort(key=lambda x: x["match_score"], reverse=True)
+            st.session_state.screening_results = screened
+            save_screened_to_supabase(screened)
+            st.success(f"Screening complete! {len(screened)} candidate(s) evaluated.")
+            st.rerun()
 
     results = st.session_state.get("screening_results", [])
     if results:
-        st.download_button("📊 Export Screened Excel", generate_excel(pd.DataFrame(results)), "Screened_Candidates.xlsx", use_container_width=True)
-        for idx, cand in enumerate(results, start=1):
-            with st.expander(f"#{idx} — {cand['Name']} | Match: {cand['match_score']}% | Stage: {cand['pipeline_status']}"):
-                st.write(f"🎓 **Education:** {cand['Qualification']} ({cand['Institute']}) | 💼 **Experience:** {cand['Experience']}")
-                st.write(f"❌ **Missing Skills vs JD:** {', '.join(cand['missing_skills']) if cand['missing_skills'] else 'None'}")
-    st.markdown("</div>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown("### 📊 Screening Results & Candidate Gap Analysis")
+            st.download_button("📊 Export Screened Excel", generate_excel(pd.DataFrame(results)), "Screened_Candidates.xlsx", use_container_width=True)
+            for idx, cand in enumerate(results, start=1):
+                with st.expander(f"#{idx} — {cand['Name']} | Match: {cand['match_score']}% | Stage: {cand['pipeline_status']}"):
+                    st.write(f"🎓 **Education:** {cand['Qualification']} ({cand['Institute']}) | 💼 **Experience:** {cand['Experience']}")
+                    st.write(f"❌ **Missing Skills vs JD:** {', '.join(cand['missing_skills']) if cand['missing_skills'] else 'None'}")
 
 with tab3:
-    st.markdown('<div class="corp-card"><h4>🗄️ Master Talent Repository</h4>', unsafe_allow_html=True)
-    df_live = load_database()
-    if not df_live.empty:
-        grid_df = df_live.copy()
-        grid_df.insert(0, "Sr. No.", range(1, len(grid_df) + 1))
-        st.dataframe(grid_df, use_container_width=True)
-        st.download_button("📊 Download Master Excel", generate_excel(df_live), "Master_Talent_Pool.xlsx", use_container_width=True)
-        if st.button("🗑️ Clear Talent Pool"):
-            clear_candidate_database()
-            st.rerun()
-    else:
-        st.info("No candidates in repository yet. Upload resumes in Step 1.")
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("### 🗄️ Master Talent Repository")
+        df_live = load_database()
+        if not df_live.empty:
+            grid_df = df_live.copy()
+            grid_df.insert(0, "Sr. No.", range(1, len(grid_df) + 1))
+            st.dataframe(grid_df, use_container_width=True)
+            st.download_button("📊 Download Master Excel", generate_excel(df_live), "Master_Talent_Pool.xlsx", use_container_width=True)
+            if st.button("🗑️ Clear Talent Pool"):
+                clear_candidate_database()
+                st.rerun()
+        else:
+            st.info("No candidates in repository yet. Upload resumes in Step 1.")
