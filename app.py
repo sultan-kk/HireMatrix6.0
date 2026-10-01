@@ -3,7 +3,7 @@ HireMatrix AI — Universal Enterprise ATS & Resume Screener
 =============================================================================
 Commercial B2B Edition for Recruitment Agencies & Corporate HR Teams.
 Features: 
-- 100% Fully Adaptive UI & Contrast Engine (Zero Text Invisibility in any mode)
+- 100% Solid White Input & Selectbox Containers with Crisp Dark Navy Text
 - Dynamic Job Position Menu with Full Organization Customization (Add/Delete)
 - Bulk CV Extraction, Groq LLM JD Matching & Formatted Excel Export
 - Permanent Master Admin Profile (Executive Admin) + Auto-Wipe Guest Testers
@@ -45,112 +45,113 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ----------------- 100% ADAPTIVE THEME ENGINE (ZERO CLASH) -----------------
-ADAPTIVE_CSS = """
+# ----------------- 100% GUARANTEED WHITE-BOX CSS -----------------
+SOLID_WHITE_INPUTS_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 [data-testid="stSidebar"] { display: none !important; }
 
-/* 1. ADAPTIVE INPUT BOXES & SELECTBOXES */
-div[data-baseweb="select"] > div,
-div[data-baseweb="input"],
-div[data-baseweb="base-input"] {
-    background-color: var(--secondary-background-color) !important;
-    border: 1.5px solid #0284C7 !important;
+/* 1. FORCE EVERY SELECTBOX CONTAINER & INNER NESTED DIV TO SOLID PURE WHITE */
+[data-testid="stSelectbox"] div[data-baseweb="select"],
+[data-testid="stSelectbox"] div[data-baseweb="select"] div,
+div[data-baseweb="select"],
+div[data-baseweb="select"] div {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+}
+
+/* 2. CRISP BLUE BORDER ON SELECTBOX */
+div[data-baseweb="select"] > div {
+    border: 2px solid #0284C7 !important;
     border-radius: 10px !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
-    transition: all 0.2s ease-in-out !important;
 }
 
-div[data-baseweb="select"]:focus-within > div,
-div[data-baseweb="input"]:focus-within,
-div[data-baseweb="base-input"]:focus-within {
-    border-color: #38BDF8 !important;
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
+/* 3. SELECTBOX TEXT & VALUE - BOLD DARK NAVY */
+[data-testid="stSelectbox"] div[data-baseweb="select"] *,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] div {
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 700 !important;
 }
 
-/* 2. ADAPTIVE CONTRAST TEXT (AUTOMATICALLY BRIGHT IN DARK MODE / DARK IN LIGHT MODE) */
-div[data-baseweb="select"] *,
-div[data-baseweb="input"] *,
-div[data-baseweb="base-input"] *,
-input,
-textarea {
-    color: var(--text-color) !important;
-    -webkit-text-fill-color: var(--text-color) !important;
+/* 4. SELECTBOX ARROW ICON */
+div[data-baseweb="select"] svg {
+    fill: #0284C7 !important;
+    color: #0284C7 !important;
+}
+
+/* 5. TEXTAREA - PURE WHITE CONTAINER & INNER TEXTAREA */
+[data-testid="stTextArea"] div[data-baseweb="base-input"],
+[data-testid="stTextArea"] textarea,
+div[data-baseweb="base-input"],
+div[data-baseweb="base-input"] textarea {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    border: 2px solid #0284C7 !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
     font-size: 0.95rem !important;
 }
 
-/* 3. DROPDOWN ARROW COLOR */
-div[data-baseweb="select"] svg {
-    fill: var(--text-color) !important;
-    color: var(--text-color) !important;
-    opacity: 0.8 !important;
-}
-
-/* 4. ADAPTIVE DROPDOWN POPUP MENU */
-div[data-baseweb="popover"],
-ul[data-baseweb="menu"],
-ul[role="listbox"] {
-    background-color: var(--secondary-background-color) !important;
-    border: 1.5px solid #0284C7 !important;
+/* 6. TEXT INPUTS (DEPARTMENT / JOB IN EXPANDER) */
+[data-testid="stTextInput"] div[data-baseweb="input"],
+[data-testid="stTextInput"] input,
+div[data-baseweb="input"],
+div[data-baseweb="input"] input {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    border: 2px solid #0284C7 !important;
     border-radius: 10px !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 700 !important;
 }
 
-ul[data-baseweb="menu"] li,
-ul[role="listbox"] li {
-    background-color: transparent !important;
-}
-
-ul[data-baseweb="menu"] li *,
-ul[role="listbox"] li * {
-    color: var(--text-color) !important;
-    -webkit-text-fill-color: var(--text-color) !important;
-    font-weight: 600 !important;
-}
-
-ul[data-baseweb="menu"] li:hover,
-ul[role="listbox"] li:hover {
-    background-color: rgba(2, 132, 199, 0.25) !important;
-}
-
-/* 5. PLACEHOLDERS */
+/* 7. PLACEHOLDERS (HIGH VISIBILITY SLATE) */
 ::placeholder,
 input::placeholder,
 textarea::placeholder {
-    color: var(--text-color) !important;
-    -webkit-text-fill-color: var(--text-color) !important;
-    opacity: 0.55 !important;
-    font-weight: 400 !important;
+    color: #64748B !important;
+    -webkit-text-fill-color: #64748B !important;
+    font-weight: 500 !important;
 }
 
-/* 6. LABELS & WIDGET HEADINGS */
+/* 8. DROPDOWN POPUP MENU (OPTIONS LIST WHEN CLICKED) */
+div[data-baseweb="popover"],
+div[data-baseweb="popover"] *,
+ul[data-baseweb="menu"],
+ul[data-baseweb="menu"] *,
+ul[role="listbox"],
+ul[role="listbox"] * {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+}
+ul[data-baseweb="menu"] li:hover,
+ul[data-baseweb="menu"] li:hover *,
+ul[role="listbox"] li:hover,
+ul[role="listbox"] li:hover * {
+    background-color: #E0F2FE !important;
+    color: #0284C7 !important;
+    -webkit-text-fill-color: #0284C7 !important;
+}
+
+/* 9. WIDGET LABELS */
 [data-testid="stWidgetLabel"] p,
 [data-testid="stWidgetLabel"] label,
 [data-testid="stWidgetLabel"] span {
-    color: var(--text-color) !important;
-    -webkit-text-fill-color: var(--text-color) !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-    margin-bottom: 4px !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 0.96rem !important;
 }
 
-/* 7. EXPANDERS & CONTAINERS */
-[data-testid="stExpander"] {
-    background-color: var(--secondary-background-color) !important;
-    border: 1.5px solid rgba(2, 132, 199, 0.35) !important;
-    border-radius: 12px !important;
-}
-
-[data-testid="stExpander"] summary {
-    color: var(--text-color) !important;
-    -webkit-text-fill-color: var(--text-color) !important;
-    font-weight: 700 !important;
-}
-
-/* 8. TOP NAVBAR & HERO SECTION */
+/* 10. TOP NAVBAR & HERO SECTION */
 .top-navbar { 
     background: #0F172A !important; 
     border: 1.5px solid #1E293B !important; 
@@ -176,7 +177,6 @@ textarea::placeholder {
 .corp-hero h1 { color: #FFFFFF !important; font-size: 1.9rem !important; font-weight: 800 !important; margin: 0 0 8px 0 !important; }
 .corp-hero p { color: #CBD5E1 !important; font-size: 0.95rem !important; margin: 0 !important; }
 
-/* 9. BUTTONS */
 .stButton > button { 
     background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important; 
     color: #FFFFFF !important; 
@@ -186,9 +186,9 @@ textarea::placeholder {
     padding: 0.6rem 1.2rem !important;
 }
 
-/* 10. LOGIN PROFILE BADGES */
+/* 11. LOGIN PROFILE BADGES */
 .cyber-header-box { text-align: center; padding: 1.8rem 1rem 1.2rem 1rem; margin-bottom: 1.2rem; }
-.cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: var(--text-color) !important; margin: 0 0 8px 0 !important; }
+.cyber-title { font-size: 3rem !important; font-weight: 800 !important; color: #0F172A !important; margin: 0 0 8px 0 !important; }
 .cyber-title-pro { color: #0284C7 !important; }
 .cyber-badge { display: inline-flex !important; gap: 8px; background: rgba(2, 132, 199, 0.12) !important; border: 1.5px solid #0284C7 !important; padding: 5px 20px !important; border-radius: 30px !important; font-size: 0.78rem !important; font-weight: 800 !important; color: #0284C7 !important; }
 
@@ -203,7 +203,7 @@ textarea::placeholder {
 .cyber-role-pill { background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; color: #38BDF8; padding: 2px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
 </style>
 """
-st.markdown(ADAPTIVE_CSS, unsafe_allow_html=True)
+st.markdown(SOLID_WHITE_INPUTS_CSS, unsafe_allow_html=True)
 
 if "profile" in st.query_params:
     selected_prof = st.query_params["profile"]
@@ -672,7 +672,7 @@ Return ONLY JSON: {{"match_score": 0-100, "is_relevant": true/false, "missing_sk
     except Exception: return 0.0, True, []
 
 # ----------------- TABS WORKFLOW -----------------
-tab1, tab2, tab3 = st.tabs(["📥 1. Ingest Resumes", "🎯 2. Screen & Match", "🗄️ 3. Master Talent Grid"])
+tab1, tab2, tab3 = st.tabs(["📥 1. Ingest Resumes", "🎯 2. Screen & Match", "🗄️️ 3. Master Talent Grid"])
 
 with tab1:
     with st.container(border=True):
